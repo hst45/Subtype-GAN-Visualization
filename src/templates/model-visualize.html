@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Subtype GAN</title>
+    <meta name="author" content="syt123450 / https://github.com/syt123450">
+
+    <script src="static/js/model-visualize/three.min.js"></script>
+    <script src="static/js/model-visualize/tween.min.js"></script>
+    <script src="static/js/model-visualize/tf.min.js"></script>
+    <script src="static/js/model-visualize/TrackballControls.js"></script>
+    <script src="static/js/model-visualize/tensorspace.js"></script>
+    <script src="static/js/model-visualize/stats.min.js"></script>
+
+    <script src="static/js/core-js/jquery.min.js"></script>
+
+    <style>
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #container {
+            width: 100%;
+            height: 100%;
+        }
+
+    </style>
+
+</head>
+<body>
+<div id="container"></div>
+<script>
+
+
+    let modelContainer = document.getElementById("container");
+
+    let input_2 = new TSP.layers.Input1d({
+        name: "input_2",
+        paging: true,
+        segmentLength: 20,
+        segmentIndex: 0,
+        overview: false,
+
+    });
+    let input_3 = new TSP.layers.Input1d({
+        name: "input_3",
+        paging: true,
+        segmentLength: 20,
+        segmentIndex: 0,
+        overview: false,
+    });
+    let input_4 = new TSP.layers.Input1d({
+        name: "input_4",
+        paging: true,
+        segmentLength: 20,
+        segmentIndex: 0,
+        overview: false,
+    });
+    let input_5 = new TSP.layers.Input1d({
+        name: "input_5",
+        paging: true,
+        segmentLength: 20,
+        segmentIndex: 0,
+        overview: false,
+    });
+
+    let dense_7 = new TSP.layers.Dense({
+        name: "dense_7",
+        initStatus: "open"
+    });
+    dense_7.apply(input_2);
+    let dense_8 = new TSP.layers.Dense({
+        name: "dense_8",
+        initStatus: "open"
+    });
+    dense_8.apply(input_3);
+    let dense_9 = new TSP.layers.Dense({
+        name: "dense_9",
+        initStatus: "open"
+    });
+    dense_9.apply(input_4);
+    let dense_10 = new TSP.layers.Dense({
+        name: "dense_10",
+        initStatus: "open"
+    });
+    dense_10.apply(input_5);
+
+    let concatenate_1 = new TSP.layers.Concatenate([dense_7, dense_8, dense_9, dense_10], {
+        name: "concatenate_1",
+        initStatus: "open"
+    });
+
+    let dense_11 = new TSP.layers.Dense({
+        name: "dense_11",
+        initStatus: "open"
+    });
+    dense_11.apply(concatenate_1);
+    let dense_12 = new TSP.layers.Dense({
+        name: "dense_12",
+        initStatus: "open"
+    });
+    dense_12.apply(dense_11);
+    let dense_13 = new TSP.layers.Dense({
+        name: "dense_13",
+        initStatus: "open"
+    });
+    dense_13.apply(dense_11);
+
+    let model = new TSP.models.Model(modelContainer, {
+
+        inputs: [input_2, input_3, input_4, input_5],
+        outputs: [dense_12, dense_13],
+        aggregationStrategy: "max",
+        layerShape: "line",
+        stats: true
+
+    });
+
+
+    model.load({
+        type: "keras",
+        url: 'static/convertedModel/converted_brca/model.json',
+        onProgress: function (fraction) {
+
+            console.log("Loading progress: " + fraction);
+
+        },
+        onComplete: function () {
+
+            console.log("Complete load model.");
+
+        }
+    });
+
+    model.init(function () {
+        console.log("Hello World from TensorSpace!");
+        console.log(input_2.outputShape);
+        console.log(input_3.outputShape);
+        console.log(input_4.outputShape);
+        console.log(input_5.outputShape);
+        console.log(dense_7.outputShape);
+        console.log(dense_8.outputShape);
+        console.log(dense_9.outputShape);
+        console.log(dense_10.outputShape);
+        console.log(concatenate_1.outputShape);
+        console.log(dense_11.outputShape);
+        console.log(dense_12.outputShape);
+        console.log(dense_13.outputShape);
+    });
+
+
+</script>
+
+</body>
+</html>
+
+<!--
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TensorSpace - LeNet Demo</title>
+    <meta name="author" content="syt123450 / https://github.com/syt123450">
+    <style>
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #container {
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="container"></div>
+
+<script src="static/js/model-visualize/three.min.js"></script>
+<script src="static/js/model-visualize/tween.min.js"></script>
+<script src="static/js/model-visualize/tf.min.js"></script>
+<script src="static/js/model-visualize/TrackballControls.js"></script>
+<script src="static/js/model-visualize/tensorspace.min.js"></script>
+
+<script src="static/js/core-js/jquery.min.js"></script>
+
+<script>
+
+    let modelContainer = document.getElementById("container");
+
+    {#let input = new TSP.layers.GreyscaleInput();#}
+    {#let conv_1 = new TSP.layers.Conv2d();#}
+    {#conv_1.apply(input);#}
+    {#let pool_1 = new TSP.layers.Pooling2d();#}
+    {#pool_1.apply(conv_1);#}
+    {#let conv_2 = new TSP.layers.Conv2d();#}
+    {#conv_2.apply(pool_1);#}
+    {#let pool_2 = new TSP.layers.Pooling2d();#}
+    {#pool_2.apply(conv_2);#}
+    {#let dense_1 = new TSP.layers.Dense();#}
+    {#dense_1.apply(pool_2);#}
+    {#let dense_2 = new TSP.layers.Dense();#}
+    {#dense_2.apply(dense_1);#}
+    {#let output = new TSP.layers.Output1d();#}
+    {#output.apply(dense_2);#}
+
+    {#let model = new TSP.models.Model(modelContainer, {#}
+    {##}
+    {#    inputs: [input],#}
+    {#    outputs: [output],#}
+
+
+    let input = new TSP.layers.GreyscaleInput();
+    let conv_1 = new TSP.layers.Conv2d();
+    let pool_1 = new TSP.layers.Pooling2d();
+    let conv_2 = new TSP.layers.Conv2d();
+    let pool_2 = new TSP.layers.Pooling2d();
+    let dense_1 = new TSP.layers.Dense();
+    let dense_2 = new TSP.layers.Dense();
+    {#let output = new TSP.layers.Output1d();#}
+
+    let model = new TSP.models.Sequential(modelContainer);
+    model.add(input);
+    model.add(conv_1);
+    model.add(pool_1);
+    model.add(conv_2);
+    model.add(pool_2);
+    model.add(dense_1);
+    model.add(dense_2);
+    {#model.add(output);#}
+
+
+    console.log(conv_1.outputShape.length);
+    console.log(pool_1.outputShape.length);
+    console.log(conv_2.outputShape.length);
+    console.log(pool_2.outputShape.length);
+    console.log(dense_1.outputShape.length);
+    console.log(dense_2.outputShape.length);
+    {#console.log(output.outputShape.length);#}
+
+    // Load layer model
+    // model.load( {
+    //
+    // 	type: "tensorflow",
+    // 	url: './convertedModel/layerModel/model.json'
+    //
+    // } );
+
+    // Load graph model
+    model.load({
+
+        type: "tfjs",
+        url: 'static/convertedModel/converted_keras/model.json',
+        onProgress: function (fraction) {
+
+            console.log("Loading progress: " + fraction);
+
+        },
+        onComplete: function () {
+
+            console.log("Complete load model.");
+
+        }
+
+    });
+
+    model.init(function () {
+
+        {#$.ajax({#}
+        {##}
+        {#    url: "static/convertedModel/5.json",#}
+        {#    type: 'GET',#}
+        {#    async: true,#}
+        {#    dataType: 'json',#}
+        {#    success: function (data) {#}
+        {##}
+        {#        model.predict(data);#}
+        {##}
+        {#    }#}
+
+        //});
+
+        console.log("hello");
+
+    });
+
+</script>
+</body>
+</html>

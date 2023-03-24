@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MobileNet</title>
+    <meta name="author" content="syt123450 / https://github.com/syt123450">
+    <style>
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #container {
+            width: 100%;
+            height: 100%;
+        }
+
+        #loadingPad {
+            position: fixed;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            left: 0;
+            background-color: #031D32;
+            z-index: 2;
+        }
+
+        #loading {
+            position: fixed;
+            width: 30%;
+            top: 150px;
+            margin-left: 35%;
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="container"></div>
+<div id="loadingPad">
+    <img id="loading" src="static/assets/gif/loading.gif">
+</div>
+
+
+<script src="static/js/model-visualize/stats.min.js"></script>
+<script src="static/js/model-visualize/three.min.js"></script>
+<script src="static/js/model-visualize/tween.min.js"></script>
+<script src="static/js/model-visualize/tf.min.js"></script>
+<script src="static/js/model-visualize/TrackballControls.js"></script>
+<script src="static/js/model-visualize/tensorspace.min.js"></script>
+<script src="static/js/core-js/jquery.min.js"></script>
+
+<script src="static/js/model-visualize/mobilenetv1/imagenet_result.js"></script>
+
+
+<script>
+
+	let modelContainer = document.getElementById( "container" );
+
+	let model = new TSP.models.Sequential( modelContainer, {
+
+		stats: true
+
+	}  );
+
+	model.add( new TSP.layers.RGBInput() );
+
+	model.add( new TSP.layers.Conv2d({
+        initStatus: "open"
+    }) );
+
+	model.add( new TSP.layers.DepthwiseConv2d() );
+
+	model.add( new TSP.layers.Conv2d() );
+
+	model.add( new TSP.layers.DepthwiseConv2d() );
+
+	model.add( new TSP.layers.Conv2d() );
+
+	model.add( new TSP.layers.DepthwiseConv2d() );
+
+	model.add( new TSP.layers.Conv2d() );
+
+	model.add( new TSP.layers.DepthwiseConv2d() );
+
+	model.add( new TSP.layers.Conv2d() );
+
+	model.add( new TSP.layers.DepthwiseConv2d({
+        initStatus: "open"
+    }) );
+
+	model.add( new TSP.layers.Conv2d() );
+
+	model.add( new TSP.layers.DepthwiseConv2d() );
+
+	model.add( new TSP.layers.Conv2d() );
+
+	model.add( new TSP.layers.DepthwiseConv2d() );
+
+	model.add( new TSP.layers.Conv2d() );
+
+	model.add( new TSP.layers.DepthwiseConv2d() );
+
+	model.add( new TSP.layers.Conv2d() );
+
+	model.add( new TSP.layers.DepthwiseConv2d() );
+
+	model.add( new TSP.layers.Conv2d() );
+
+	model.add( new TSP.layers.DepthwiseConv2d() );
+
+	model.add( new TSP.layers.Conv2d() );
+
+	model.add( new TSP.layers.DepthwiseConv2d() );
+
+	model.add( new TSP.layers.Conv2d() );
+
+	model.add( new TSP.layers.DepthwiseConv2d() );
+
+	model.add( new TSP.layers.Conv2d() );
+
+	model.add( new TSP.layers.DepthwiseConv2d() );
+
+	model.add( new TSP.layers.Conv2d() );
+
+	model.add( new TSP.layers.GlobalPooling2d() );
+
+	model.add( new TSP.layers.Output1d( {
+
+		paging: true,
+		segmentLength: 200,
+		outputs: result
+
+    } ) );
+
+	model.load( {
+
+		type: "keras",
+		url: 'static/convertedModel/mobilenetv1/model.json'
+
+	} );
+
+	model.init(function() {
+
+		$.ajax( {
+
+			url: "static/convertedModel/coffeepot.json",
+			type: 'GET',
+			async: true,
+			dataType: 'json',
+			success: function ( data ) {
+
+				model.predict( data );
+				$( "#loadingPad" ).hide();
+
+			}
+
+		} );
+
+    });
+
+</script>
+
+</body>
+</html>
